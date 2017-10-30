@@ -73,9 +73,23 @@ void V(struct semaphore *);
  * (should be) made internally.
  */
 struct lock {
-        char *lk_name;
-        // add what you need here
-        // (don't forget to mark things volatile as needed)
+	char *lk_name;
+	// add what you need here
+	// (don't forget to mark things volatile as needed)
+
+	//queue for processes to wait
+	struct wchan *lockWchan;
+
+	//flag indicating whether it's locked (needs to be volatile to avoid caching effects)
+	volatile int flagLocked;
+
+	//field to mark owner
+	struct thread * owner;
+
+	//spinlock to protect the above fields
+	struct spinlock lockProtection;
+
+
 };
 
 struct lock *lock_create(const char *name);
@@ -115,6 +129,17 @@ struct cv {
         char *cv_name;
         // add what you need here
         // (don't forget to mark things volatile as needed)
+	char *cv_name;
+        // add what you need here
+        // (don't forget to mark things volatile as needed)
+
+	//a queue for the processes to wait in
+	struct wchan cvWchan;
+
+	//a spinlock to protect the queue
+	struct spinlock cvLock;
+
+
 };
 
 struct cv *cv_create(const char *name);

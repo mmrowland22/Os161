@@ -1215,3 +1215,47 @@ interprocessor_interrupt(void)
 	curcpu->c_ipi_pending = 0;
 	spinlock_release(&curcpu->c_ipi_lock);
 }
+
+int thread_join(struct thread *thread)
+{
+
+	KASSERT(thread != NULL);
+	struct thread *parent;
+	parent = thread->parent;
+
+	//Parent at time of forking
+
+		//set all new member fields when forking a new thread
+
+	//Parent at th time of joining
+
+		//acquire the lock
+		spinlock_acquire(&thread->protectChild);
+
+		//loop to check if child is complete
+		while(childComplete == 0)
+		{
+			//wait on the CV for the status to change
+			cv_wait(parentWake, protectChild);
+		}
+
+		//release the lock
+		spinlock_release(&thread->protectChild);
+
+		//return the status of the terminated child
+
+	//Child at time of terminating
+		//acquire the lock
+
+		spinlock_aquire(&thread->protectChild);
+
+		//set the completion status
+		childComplete = 1;
+
+		//signal the CV so parent can detect the child has completed
+		cv_signal(parentWake, protectChild);
+
+		//release the lock
+		spinlock_acquire(&thread->protectChild);
+}
+

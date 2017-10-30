@@ -109,6 +109,16 @@ struct thread {
 	bool t_did_reserve_buffers;	/* reserve_buffers() in effect */
 
 	/* add more here as needed */
+
+	//a status to idnicate if the child is complete
+	bool childComplete;
+
+	//lock to protect the child
+	struct spinlock protectChild;
+
+	//CV for the parent to wake up when child terminates (includes wchan for the parent to sleep and wait)
+	struct cv *parentWake;
+
 };
 
 /*
