@@ -222,6 +222,7 @@ lock_acquire(struct lock *lock)
 
 	KASSERT(lock->flagLocked > 0);
 
+	lock->flagLocked = 0;
 
 	//set owner to thread
 	if(CURCPU_EXISTS())
